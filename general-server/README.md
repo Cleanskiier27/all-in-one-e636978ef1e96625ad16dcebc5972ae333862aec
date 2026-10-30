@@ -4,13 +4,15 @@ A lightweight Node.js + Express application built as a reusable template for dep
 
 ## Features
 
-- Simple root response for app health
+- Real frontend dashboard with live status cards and message composer
+- SQLite-backed data layer using `better-sqlite3`
 - `/health` readiness endpoint
-- `/api/status` status endpoint
+- `/api/status` and `/api/metrics` reporting endpoints
+- `/api/messages` CRUD-style JSON API for persisted message storage
 - Docker image support for Cloud Run
 - Render configuration via `render.yaml`
 - Vercel rewrite setup via `vercel.json`
-- Environment variable support via `.env.example`
+- Environment variables via `.env.example`
 
 ## Local development
 
@@ -24,19 +26,37 @@ Then open:
 - http://localhost:3000/
 - http://localhost:3000/health
 - http://localhost:3000/api/status
+- http://localhost:3000/api/messages
+
+If PowerShell blocks `npm` on Windows, run the CLI directly:
+
+```powershell
+& "C:\Users\fligh\OneDrive\networkbuster-cloud\OneDrive\Attachments\node.exe" "C:\Users\fligh\OneDrive\networkbuster-cloud\OneDrive\Attachments\node_modules\npm\bin\npm-cli.js" install
+```
 
 ## Environment
 
 ```env
 PORT=3000
 NODE_ENV=development
+DB_PATH=./data/app.db
 ```
 
 ## Deploy to Cloud Run
 
+Use the included deployment script:
+
 ```bash
-gcloud builds submit --tag gcr.io/PROJECT_ID/deployment-ready-app
-gcloud run deploy deployment-ready-app --image gcr.io/PROJECT_ID/deployment-ready-app --platform managed --region us-central1 --allow-unauthenticated
+chmod +x deploy-cloud-run.sh
+export PROJECT_ID=my-project-id
+./deploy-cloud-run.sh
+```
+
+Or run the equivalent gcloud commands manually:
+
+```bash
+gcloud builds submit --tag gcr.io/PROJECT_ID/platform-dashboard
+gcloud run deploy platform-dashboard --image gcr.io/PROJECT_ID/platform-dashboard --platform managed --region us-central1 --allow-unauthenticated --port 3000
 ```
 
 ## Deploy to Render
@@ -58,9 +78,17 @@ Use the included `vercel.json` and deploy the project as a Node serverless app.
 ├── .dockerignore
 ├── api/
 │   └── index.js
+├── data/
+├── deploy-cloud-run.sh
+├── public/
+│   ├── app.js
+│   ├── index.html
+│   └── styles.css
+├── database.js
 ├── package.json
 ├── render.yaml
 ├── server.js
+├── server.test.js
 ├── vercel.json
 └── package-lock.json
 ```

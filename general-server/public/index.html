@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Platform Dashboard</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <div class="page-shell">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">Deployment-ready app</p>
+          <h1>Platform Dashboard</h1>
+        </div>
+        <div class="status-pill" id="serviceStatus">Loading…</div>
+      </header>
+
+      <main class="dashboard-grid">
+        <section class="card highlight">
+          <div class="card-label">Service state</div>
+          <div class="stat-value" id="serviceValue">Checking…</div>
+          <div class="stat-meta" id="serviceMeta">Loading runtime details…</div>
+        </section>
+
+        <section class="card">
+          <div class="card-label">Messages stored</div>
+          <div class="stat-value" id="messageCount">0</div>
+          <div class="stat-meta" id="lastUpdated">Waiting for data…</div>
+        </section>
+
+        <section class="card wide">
+          <div class="card-label">Latest update</div>
+          <div class="stat-value small" id="latestMessage">No messages yet</div>
+        </section>
+      </main>
+
+      <section class="composer card">
+        <h2>Leave a message</h2>
+        <form id="messageForm">
+          <div class="field-row">
+            <label>
+              <span>Author</span>
+              <input id="author" name="author" type="text" placeholder="Jane Doe" required />
+            </label>
+            <label>
+              <span>Message</span>
+              <textarea id="message" name="message" rows="3" placeholder="What should the app remember?" required></textarea>
+            </label>
+          </div>
+          <button type="submit">Save message</button>
+        </form>
+      </section>
+
+      <section class="card list-card">
+        <div class="list-header">
+          <h2>Recent entries</h2>
+        </div>
+        <ul id="messageList" class="message-list"></ul>
+      </section>
+    </div>
+
+    <script src="/app.js"></script>
+  </body>
+</html>

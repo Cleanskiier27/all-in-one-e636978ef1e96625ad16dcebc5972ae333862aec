@@ -10,9 +10,11 @@
   "scripts": {
     "start": "node server.js",
     "dev": "node --watch server.js",
+    "test": "node --test",
     "health": "node -e \"fetch(process.env.HEALTH_URL || 'http://localhost:' + (process.env.PORT || 3000) + '/health').then(r => r.json()).then(console.log)\""
   },
   "dependencies": {
+    "better-sqlite3": "^13.0.3",
     "express": "^4.21.2"
   },
   "license": "MIT"
