@@ -167,6 +167,34 @@ button:hover {
   margin-top: 24px;
 }
 
+.list-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.secondary-button {
+  border: 1px solid var(--line);
+  background: rgba(15, 23, 42, 0.72);
+  color: var(--text);
+  border-radius: 10px;
+  font-weight: 600;
+  padding: 10px 14px;
+  cursor: pointer;
+  transition: filter 0.2s ease, opacity 0.2s ease;
+}
+
+.secondary-button:hover:not(:disabled) {
+  filter: brightness(1.1);
+}
+
+.secondary-button:disabled {
+  opacity: 0.7;
+  cursor: wait;
+}
+
 .message-list {
   list-style: none;
   padding: 0;
@@ -203,5 +231,10 @@ button:hover {
   .topbar {
     flex-direction: column;
     align-items: flex-start;
+  }
+
+  .list-header {
+    align-items: flex-start;
+    flex-direction: column;
   }
 }

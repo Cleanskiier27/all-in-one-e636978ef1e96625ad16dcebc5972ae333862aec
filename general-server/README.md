@@ -4,11 +4,12 @@ A lightweight Node.js + Express application built as a reusable template for dep
 
 ## Features
 
-- Real frontend dashboard with live status cards and message composer
+- Real frontend dashboard with live status cards, polling refresh, and message composer
 - SQLite-backed data layer using `better-sqlite3`
 - `/health` readiness endpoint
 - `/api/status` and `/api/metrics` reporting endpoints
 - `/api/messages` CRUD-style JSON API for persisted message storage
+- Client-side rendering that avoids unsafe HTML injection and keeps the dashboard resilient
 - Docker image support for Cloud Run
 - Render configuration via `render.yaml`
 - Vercel rewrite setup via `vercel.json`

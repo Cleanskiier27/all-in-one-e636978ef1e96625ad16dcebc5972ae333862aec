@@ -6,44 +6,77 @@ const latestMessage = document.getElementById('latestMessage');
 const serviceStatus = document.getElementById('serviceStatus');
 const messageList = document.getElementById('messageList');
 const form = document.getElementById('messageForm');
+const refreshButton = document.getElementById('refreshButton');
 
 function formatTimestamp(timestamp) {
   if (!timestamp) return 'No timestamps yet';
   return new Date(timestamp).toLocaleString();
 }
 
-async function loadMetrics() {
-  const response = await fetch('/api/metrics');
-  const data = await response.json();
-
-  serviceValue.textContent = data.status || 'ready';
-  serviceMeta.textContent = `Database: ${data.databaseStatus || 'connected'} • Service: ${data.service}`;
-  serviceStatus.textContent = data.status === 'ready' ? 'Healthy' : 'Checking…';
-  messageCount.textContent = data.totalMessages ?? 0;
-  lastUpdated.textContent = `Updated: ${formatTimestamp(data.lastUpdated)}`;
-  latestMessage.textContent = data.latestMessage || 'No messages yet';
+function setLoadingState(isLoading) {
+  if (!refreshButton) return;
+  refreshButton.disabled = isLoading;
+  refreshButton.textContent = isLoading ? 'Refreshing…' : 'Refresh now';
 }
 
-async function loadMessages() {
-  const response = await fetch('/api/messages');
-  const data = await response.json();
+function renderMessageList(data) {
+  messageList.innerHTML = '';
 
   if (!Array.isArray(data) || data.length === 0) {
-    messageList.innerHTML = '<li class="empty-state">No messages saved yet.</li>';
+    const empty = document.createElement('li');
+    empty.className = 'empty-state';
+    empty.textContent = 'No messages saved yet.';
+    messageList.appendChild(empty);
     return;
   }
 
-  messageList.innerHTML = data
-    .map(
-      (item) => `
-        <li>
-          <strong>${item.author}</strong>
-          <div>${item.message}</div>
-          <time>${formatTimestamp(item.createdAt)}</time>
-        </li>
-      `
-    )
-    .join('');
+  data.forEach((item) => {
+    const entry = document.createElement('li');
+
+    const author = document.createElement('strong');
+    author.textContent = item.author;
+
+    const body = document.createElement('div');
+    body.textContent = item.message;
+
+    const timestamp = document.createElement('time');
+    timestamp.textContent = formatTimestamp(item.createdAt);
+
+    entry.append(author, body, timestamp);
+    messageList.appendChild(entry);
+  });
+}
+
+async function refreshDashboard() {
+  setLoadingState(true);
+
+  try {
+    const [metricsResponse, messagesResponse] = await Promise.all([
+      fetch('/api/metrics'),
+      fetch('/api/messages'),
+    ]);
+
+    if (!metricsResponse.ok || !messagesResponse.ok) {
+      throw new Error('Failed to refresh dashboard data.');
+    }
+
+    const metrics = await metricsResponse.json();
+    const messages = await messagesResponse.json();
+
+    serviceValue.textContent = metrics.status || 'ready';
+    serviceMeta.textContent = `Database: ${metrics.databaseStatus || 'connected'} • Service: ${metrics.service}`;
+    serviceStatus.textContent = metrics.status === 'ready' ? 'Healthy' : 'Checking…';
+    messageCount.textContent = metrics.totalMessages ?? 0;
+    lastUpdated.textContent = `Updated: ${formatTimestamp(metrics.lastUpdated)}`;
+    latestMessage.textContent = metrics.latestMessage || 'No messages yet';
+    renderMessageList(messages);
+  } catch (error) {
+    serviceStatus.textContent = 'Error';
+    lastUpdated.textContent = error.message || 'Unable to refresh dashboard';
+    latestMessage.textContent = 'Retrying soon';
+  } finally {
+    setLoadingState(false);
+  }
 }
 
 form.addEventListener('submit', async (event) => {
@@ -71,9 +104,13 @@ form.addEventListener('submit', async (event) => {
   }
 
   form.reset();
-  await loadMetrics();
-  await loadMessages();
+  await refreshDashboard();
 });
 
-loadMetrics();
-loadMessages();
+if (refreshButton) {
+  refreshButton.addEventListener('click', refreshDashboard);
+  window.addEventListener('load', refreshDashboard);
+  window.setInterval(refreshDashboard, 15000);
+} else {
+  refreshDashboard();
+}
