@@ -2,13 +2,18 @@
   "name": "deployment-ready-app",
   "version": "1.0.0",
   "private": true,
-  "description": "Deployment-ready general app for Render, Vercel, and Cloud Run",
+  "description": "Production-ready Node.js app template for Render, Vercel, and Cloud Run",
   "main": "server.js",
+  "engines": {
+    "node": ">=18"
+  },
   "scripts": {
     "start": "node server.js",
-    "dev": "node --watch server.js"
+    "dev": "node --watch server.js",
+    "health": "node -e \"fetch(process.env.HEALTH_URL || 'http://localhost:' + (process.env.PORT || 3000) + '/health').then(r => r.json()).then(console.log)\""
   },
   "dependencies": {
     "express": "^4.21.2"
-  }
+  },
+  "license": "MIT"
 }

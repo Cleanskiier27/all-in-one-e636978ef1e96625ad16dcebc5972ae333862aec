@@ -3,6 +3,9 @@ const express = require('express');
 const app = express();
 const port = Number(process.env.PORT) || 3000;
 
+app.disable('x-powered-by');
+app.set('json spaces', 2);
+
 app.get('/', (req, res) => {
   res.json({
     status: 'ok',
@@ -11,14 +14,16 @@ app.get('/', (req, res) => {
     timestamp: new Date().toISOString(),
     environment: process.env.NODE_ENV || 'development',
     port,
+    routes: ['/', '/health', '/api/status'],
   });
 });
 
 app.get('/health', (req, res) => {
   res.json({
     status: 'healthy',
-    uptime: process.uptime(),
+    uptime: Number(process.uptime().toFixed(3)),
     timestamp: new Date().toISOString(),
+    environment: process.env.NODE_ENV || 'development',
   });
 });
 
@@ -28,6 +33,17 @@ app.get('/api/status', (req, res) => {
     app: 'deployment-ready-app',
     version: '1.0.0',
     timestamp: new Date().toISOString(),
+    environment: process.env.NODE_ENV || 'development',
+  });
+});
+
+app.get('/api/info', (req, res) => {
+  res.json({
+    app: 'deployment-ready-app',
+    platform: 'nodejs',
+    framework: 'express',
+    healthCheck: '/health',
+    docs: 'See README.md for deployment instructions',
   });
 });
 
