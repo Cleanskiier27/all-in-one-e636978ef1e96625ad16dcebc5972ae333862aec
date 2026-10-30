@@ -1,10 +1,10 @@
-# Deployment-Ready App
+# AlphaVPN Dashboard
 
-A lightweight Node.js + Express application built as a reusable template for deployment on Render, Vercel, and Google Cloud Run.
+A lightweight Node.js + Express application for a secure VPN operations dashboard, built as a reusable template for deployment on Render, Vercel, and Google Cloud Run.
 
 ## Features
 
-- Real frontend dashboard with live status cards, polling refresh, and message composer
+- Real frontend dashboard with live tunnel status cards, polling refresh, and event logging
 - SQLite-backed data layer using `better-sqlite3`
 - `/health` readiness endpoint
 - `/api/status` and `/api/metrics` reporting endpoints

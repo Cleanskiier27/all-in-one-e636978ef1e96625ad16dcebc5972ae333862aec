@@ -25,7 +25,7 @@ function renderMessageList(data) {
   if (!Array.isArray(data) || data.length === 0) {
     const empty = document.createElement('li');
     empty.className = 'empty-state';
-    empty.textContent = 'No messages saved yet.';
+    empty.textContent = 'No VPN activity logged yet.';
     messageList.appendChild(empty);
     return;
   }
@@ -65,10 +65,10 @@ async function refreshDashboard() {
 
     serviceValue.textContent = metrics.status || 'ready';
     serviceMeta.textContent = `Database: ${metrics.databaseStatus || 'connected'} • Service: ${metrics.service}`;
-    serviceStatus.textContent = metrics.status === 'ready' ? 'Healthy' : 'Checking…';
+    serviceStatus.textContent = metrics.status === 'ready' ? 'Secure' : 'Checking…';
     messageCount.textContent = metrics.totalMessages ?? 0;
     lastUpdated.textContent = `Updated: ${formatTimestamp(metrics.lastUpdated)}`;
-    latestMessage.textContent = metrics.latestMessage || 'No messages yet';
+    latestMessage.textContent = metrics.latestMessage || 'No activity yet';
     renderMessageList(messages);
   } catch (error) {
     serviceStatus.textContent = 'Error';
